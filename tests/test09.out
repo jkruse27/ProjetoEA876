@@ -1,0 +1,5 @@
+MOV A, 2
+MOV B, 3
+MUL B
+PUSH A
+POP A

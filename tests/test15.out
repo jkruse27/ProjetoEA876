@@ -1,0 +1,18 @@
+MOV A, 2
+MOV B, 0
+CMP B, 0
+JZ final0
+CMP B, 1
+JZ rot0
+loop0:
+	MUL A
+	SUB B, 1
+	CMP B, 1
+	JNZ loop0
+rot0:
+	PUSH A
+	JMP dps0
+final0:
+	PUSH 1
+dps0: 
+POP A

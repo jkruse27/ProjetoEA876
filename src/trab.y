@@ -1,5 +1,4 @@
 %{
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -10,7 +9,7 @@ int c = 0;		/*A variável global é usada para gerar nomes de rótulos diferente
 
 %token INT FIM  
 %left  '+' '-'		/*Os comandos left são usados para gerar a precedência entre as operações*/ 
-%left '*' 
+%left '*' '/'
 %left '^'
 
 %%
@@ -22,7 +21,10 @@ ARQ:
 
 EXPRESSAO:
 	 INT {$$ = $1;}
-	 | '(' EXPRESSAO ')' 		{$$ = -1;}	/*Para saber quando a expressão ja foi calculada e seu resultado está empilhado, o marcador -1 é passado*/
+	 | '(' EXPRESSAO ')' 		{
+		if($2 != -1)
+			printf("PUSH %d\n",$2);
+		$$ = -1;}	/*Para saber quando a expressão ja foi calculada e seu resultado está empilhado, o marcador -1 é passado*/
 	| EXPRESSAO '^' EXPRESSAO {
 		if($1==-1)				/*Caso o primeiro valor da conta esteja empilhado*/
 			printf("POP A\n");
@@ -46,6 +48,17 @@ EXPRESSAO:
 			printf("MOV B, %d\n", $3);
 		printf("MUL B\nPUSH A\n");
 		$$ = -1;}			      
+	| EXPRESSAO '/' EXPRESSAO {
+		if($1==-1)
+			printf("POP A\n");
+		else
+			printf("MOV A, %d\n", $1);
+		if($3==-1)
+			printf("POP B\n");
+		else
+			printf("MOV B, %d\n", $3);
+		printf("DIV B\nPUSH A\n");
+		$$ = -1;}			      
 	| EXPRESSAO '+' EXPRESSAO {
 		if($1==-1)
 			printf("POP A\n");
@@ -67,7 +80,11 @@ EXPRESSAO:
 		else
 			printf("MOV B, %d\n", $3);
 		printf("SUB A, B\nPUSH A\n");
-		$$ = -1;}			      
+		$$ = -1;}	
+	| '-' INT {
+		printf("MOV A, 0\nMOV B, %d\nSUB A, B\n PUSH A\n", $2);
+		$$ = -1;
+		}		      
 	;
 %%
 

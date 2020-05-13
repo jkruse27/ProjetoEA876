@@ -8,7 +8,7 @@ void yyerror(char *);
 
 
 %%
-[+\-\*\^]  	{return *yytext;}
+[\/+\-\*\^]  	{return *yytext;}
 [\(\)]		{return *yytext;}
 \n		{return FIM;}
 [0-9]+ 		{yylval = atoi(yytext);
